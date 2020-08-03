@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.net.MalformedURLException;
@@ -64,6 +65,7 @@ public class Accueil extends javax.swing.JFrame {
             Context.setClient(client);
             server.registerClient(client);
             Accueil accueil = new Accueil(name);
+
             Common.logger.info("Salut " + name);
             java.awt.EventQueue.invokeLater(() -> accueil.setVisible(true));
         } catch (NotBoundException e) {
@@ -99,35 +101,48 @@ public class Accueil extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(Configuration.Background_Color);
+
         jLabel1.setText("Bienvenue " + name);
+        //   jLabel1.setSize(new Dimension(100, 100));
+        jLabel1.setFont(new Font("Sans Serif", Font.PLAIN, 14));
+
+        //    jLabel1.setForeground(Configuration.Writing_Color);
+
 
         vsPlayer.setText("Jouez contre un joueur");
         vsPlayer.addActionListener(this::jouezContreUnJoueur);
+        vsPlayer.setBackground(Configuration.Btn_Color);
+
         vsComputer.setText("Jouez contre l'ordinateur");
         vsComputer.addActionListener(this::jouezContreOrdinateur);
+        vsComputer.setBackground(Configuration.Btn_Color);
+
+        //jPanel1.setPreferredSize(new Dimension(500,500));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap(89, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                                        .addGroup(GroupLayout.Alignment.CENTER, jPanel1Layout.createSequentialGroup()
                                                 .addComponent(vsPlayer)
                                                 .addGap(58, 58, 58)
                                                 .addComponent(vsComputer)
                                                 .addGap(77, 77, 77))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addGroup(GroupLayout.Alignment.CENTER, jPanel1Layout.createSequentialGroup()
                                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(131, 131, 131))))
         );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(39, 39, 39)
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(30, 30, 30)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                         .addComponent(vsPlayer)
                                         .addComponent(vsComputer))
                                 .addContainerGap(114, Short.MAX_VALUE))
@@ -143,22 +158,36 @@ public class Accueil extends javax.swing.JFrame {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
-
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setContentPane(jPanel1);
         pack();
     }// </editor-fold>
 
     private void jouezContreUnJoueur(ActionEvent event) {
-        Dashboard dashboard = Dashboard.getInstance();
+
         try {
             Common.logger.info(name + " choisit de jouer contre un autre joueur");
             ServerDistant server = Context.getServer();
-
-            server.broadcastMessage(name + " Has Connected");
-            new Thread(Context.getClient()).start();
+            String mark = server.joinRoom(Context.getClient());
+            Dashboard dashboard = new Dashboard(mark);
+            Context.setDashboard(dashboard);
+            //server.broadcastMessage(name + " Has Connected");
+            //new Thread(Context.getClient()).start();
             //  welcomeUser(name);
             this.setVisible(false);
+            Context.getDashboard().setVisible(true);
+            int id = Context.getServer().getSessionId(name);
+            System.out.println(id);
+            while (id==0){
+                id = Context.getServer().getSessionId(name);
+                System.out.println(id);
+            }
+            System.out.println(id);
+            GameDistant game = (GameDistant) Naming.lookup(Configuration.getServerURL() + "/" + id);
+            Context.setGame(game);
         } catch (Exception e) {
-            dashboard.setVisible(false);
+            Context.getDashboard().setVisible(false);
             JOptionPane.showMessageDialog(this, "nous ne pouvons pas nous connecter au serveur,\n Assurez-vous que le serveur fonctionne sur le port 1099", "Échec de connexion au serveur", JOptionPane.ERROR_MESSAGE);
             Common.logger.warning("nous ne pouvons pas nous connecter au serveur, assurez-vous que le serveur fonctionne sur le port 1099");
             Common.logger.warning(e.getMessage());
@@ -168,14 +197,6 @@ public class Accueil extends javax.swing.JFrame {
     }
 
     private void jouezContreOrdinateur(ActionEvent event) {
-        try {
-            int id= Context.getServer().getSessionId(name);
-            System.out.println(id);
-            Test test = (Test) Naming.lookup(Configuration.getServerURL()+"/"+id);
-            System.out.println(test.name());
-        } catch (RemoteException | MalformedURLException | NotBoundException e) {
-            e.printStackTrace();
-        }
     }
 
 }
