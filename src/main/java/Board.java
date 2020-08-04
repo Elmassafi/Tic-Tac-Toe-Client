@@ -20,11 +20,12 @@ public final class Board extends JPanel {
     /**
      * Create the panel.
      *
-     * @param mark accepter deux valeurs X ou O
+     * @param mark accept Two values X Or O
      */
     public Board(String mark) {
         this.mark = mark;
         setSize(200, 200);
+        //this.addWindowListener(new WindowClosing());
         initComponents();
     }
 
@@ -54,7 +55,6 @@ public final class Board extends JPanel {
     }
 
     private void waitForTurn() {
-
        /* for (JButton b : buttons) {
             b.addActionListener(a -> {
             });
@@ -67,18 +67,18 @@ public final class Board extends JPanel {
         }*/
     }
 
-    private void actionPerformed(ActionEvent e)  {
-        System.out.println("this : "+mark);
+    private void actionPerformed(ActionEvent event) {
+        System.out.println("this : " + mark);
         try {
-            JButton b = (JButton) e.getSource();
+            JButton b = (JButton) event.getSource();
             Context.getGame().playMove(mark, buttons.indexOf(b));
-        } catch (RemoteException remoteException) {
-            remoteException.printStackTrace();
+        } catch (RemoteException | ArrayIndexOutOfBoundsException ex) {
+            Common.logger.warning(ex.getMessage());
         }
 
     }
 
-    public void newMove(String mark,int move) {
+    public void newMove(String mark, int move) {
         JButton b = buttons.get(move);
         b.setText(mark);
         b.setFont(new Font("Arial", Font.PLAIN, 40));

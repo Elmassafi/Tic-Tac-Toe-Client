@@ -2,11 +2,21 @@ import java.net.MalformedURLException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+/**
+ * @author Anas EL MASSAFI
+ */
 public interface ServerDistant extends Remote {
-    void registerClient(Client Client) throws RemoteException;
-    void disconnectClient(String name) throws RemoteException;
+
+    void registerPlayer(Player Player) throws RemoteException;
+
+    void disconnectPlayer(Player Player) throws RemoteException;
+
     Boolean checkValidName(String name) throws RemoteException;
+
     int getSessionId(String name) throws RemoteException, MalformedURLException;
-    String joinRoom(Client client)throws RemoteException;
+
+    String joinRoom(Player player) throws RemoteException;
+
+    String playVsComputer(Player player) throws RemoteException;
 
 }
