@@ -80,6 +80,7 @@ public class Loading extends JFrame {
 
         setBounds(0, 0, 400, 300);
         this.setVisible(false);
+        this.setLocationRelativeTo(null);
         this.addWindowListener(new WindowClosing());
     }// </editor-fold>
     // End of variables declaration

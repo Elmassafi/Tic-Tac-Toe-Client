@@ -20,7 +20,7 @@ public class Home extends javax.swing.JFrame {
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
-
+        this.setTitle("Tic Tac Toe : " + Context.getClient().getName() + " ");
         JPanel jPanel1 = new JPanel();
         JLabel jLabel1 = new JLabel();
         // Variables declaration - do not modify

@@ -12,11 +12,6 @@ public class Dashboard extends javax.swing.JFrame {
 
     public TextArea area;
     public JButton abandon;
-    private JPanel BoardPlace;
-    private Button send;
-    private JButton disconnect;
-    private JPanel jPanel1;
-    private JPanel jPanel2;
     private TextArea chatArea;
     private String mark;
 
@@ -31,18 +26,20 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void initComponents() {
         this.setBackground(Configuration.Background_Color);
+        this.setTitle("Tic Tac Toe : " + Context.getClient().getName() + " " + mark);
         // this.setForeground(Configuration.Writing_Color);
-        jPanel1 = new JPanel();
+        JPanel jPanel1 = new JPanel();
         area = new TextArea();
         area.setBackground(Configuration.Background_Color);
         area.setForeground(Configuration.Writing_Color);
 
-        send = new Button();
+        JButton send = new JButton();
         chatArea = new TextArea();
-        jPanel2 = new JPanel();
-        BoardPlace = new JPanel();
-        disconnect = new JButton();
+        JPanel jPanel2 = new JPanel();
+        JPanel boardPlace = new JPanel();
+        JButton disconnect = new JButton();
         disconnect.setBackground(Configuration.Btn_Color.brighter());
+
         abandon = new JButton();
         abandon.setBackground(Configuration.Btn_Color.brighter());
 
@@ -50,9 +47,16 @@ public class Dashboard extends javax.swing.JFrame {
         area.setEditable(false);
         //area.setEnabled(false);
 
-        send.setLabel("envoyer");
+        send.setText("envoyer");
         send.addActionListener(this::sendActionPerformed);
         send.setBackground(Configuration.Btn_Color.brighter());
+
+        this.setLocationRelativeTo(null);
+        /*Border line = new LineBorder(Configuration.Border_Color);
+        Border margin = new EmptyBorder(5, 15, 5, 15);
+        Border compound = new CompoundBorder(line, margin);
+        send.setBorder(compound);*/
+
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -62,12 +66,12 @@ public class Dashboard extends javax.swing.JFrame {
                                 .addContainerGap()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                                .addComponent(chatArea, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(1, 1, 1)
+                                                .addComponent(chatArea, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(10, 10, 10)
                                                 .addComponent(send, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(area, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(area, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(316, 316, 316))
         );
         jPanel1Layout.setVerticalGroup(
@@ -103,14 +107,14 @@ public class Dashboard extends javax.swing.JFrame {
                                                 .addComponent(abandon, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(disconnect, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(BoardPlace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(boardPlace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap(59, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(BoardPlace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(boardPlace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(disconnect, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -141,10 +145,10 @@ public class Dashboard extends javax.swing.JFrame {
         Board board = new Board(mark);
         Context.setBoard(board);
         board.setVisible(true);
-        BoardPlace.removeAll();
-        BoardPlace.add(board);
-        BoardPlace.validate();
-        BoardPlace.repaint();
+        boardPlace.removeAll();
+        boardPlace.add(board);
+        boardPlace.validate();
+        boardPlace.repaint();
         this.setResizable(false);
         pack();
     }
@@ -175,10 +179,10 @@ public class Dashboard extends javax.swing.JFrame {
         String message = chatArea.getText();
         try {
             message = message.trim();
+            chatArea.setText("");
             if (!message.equals("")) {
                 Context.getGame().sendMessage(Context.getClient().getName() + ": " + message);
             }
-            chatArea.setText("");
         } catch (RemoteException e) {
             e.printStackTrace();
         }

@@ -45,6 +45,12 @@ public class HumanPlayer extends UnicastRemoteObject implements Player {
     }
 
     @Override
+    public void tie() {
+        Context.getDashboard().abandon.setText("Match nul");
+        Context.getDashboard().abandon.setBackground(Color.decode("#F5E960"));
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }
@@ -53,7 +59,7 @@ public class HumanPlayer extends UnicastRemoteObject implements Player {
     public void meetingRoomRespond(int res) throws RemoteException {
         try {
             if (res == 1) {
-                AtomicInteger id ;
+                AtomicInteger id;
                 try {
                     id = new AtomicInteger(Context.getServer().getSessionId(name));
                     GameDistant game = (GameDistant) Naming.lookup(Configuration.getServerURL() + "/" + id.get());
@@ -69,7 +75,6 @@ public class HumanPlayer extends UnicastRemoteObject implements Player {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-
 
     }
 }
