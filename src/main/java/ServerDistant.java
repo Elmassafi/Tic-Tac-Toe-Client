@@ -17,6 +17,6 @@ public interface ServerDistant extends Remote {
 
     String joinRoom(Player player) throws RemoteException;
 
-    String playVsComputer(Player player) throws RemoteException;
+    String playVsComputer(Player player,String algorithmName) throws RemoteException;
 
 }

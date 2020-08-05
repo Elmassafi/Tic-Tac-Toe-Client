@@ -1,8 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.rmi.RemoteException;
 
 /**
  * @author Anas EL MASSAFI
@@ -14,6 +11,7 @@ public class Loading extends JFrame {
     public javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+
     /**
      * Creates new form Loading
      */

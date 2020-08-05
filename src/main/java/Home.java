@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
 import java.rmi.Naming;
 
 /**
@@ -33,8 +32,8 @@ public class Home extends javax.swing.JFrame {
         jPanel1.setBackground(Configuration.Background_Color);
 
         jLabel1.setText("Bienvenue " + name);
-        //   jLabel1.setSize(new Dimension(100, 100));
-        jLabel1.setFont(new Font("Sans Serif", Font.PLAIN, 14));
+        jLabel1.setPreferredSize(new Dimension(200, 100));
+        jLabel1.setFont(new Font("Segoe Print", Font.PLAIN, 20));
 
         //    jLabel1.setForeground(Configuration.Writing_Color);
 
@@ -54,22 +53,22 @@ public class Home extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
                 jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap(89, Short.MAX_VALUE)
+                                .addContainerGap(100, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                         .addGroup(GroupLayout.Alignment.CENTER, jPanel1Layout.createSequentialGroup()
                                                 .addComponent(vsPlayer)
-                                                .addGap(58, 58, 58)
+                                                .addGap(80, 80, 80)
                                                 .addComponent(vsComputer)
-                                                .addGap(77, 77, 77))
+                                                .addGap(80, 80, 80))
                                         .addGroup(GroupLayout.Alignment.CENTER, jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(131, 131, 131))))
         );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(39, 39, 39)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(30, 30, 30)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(30, 30, 30)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                         .addComponent(vsPlayer)
@@ -85,7 +84,7 @@ public class Home extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
         );
         setResizable(false);
         setLocationRelativeTo(null);
@@ -119,21 +118,31 @@ public class Home extends javax.swing.JFrame {
 
     private void jouezContreOrdinateur(ActionEvent event) {
         try {
-            Common.logger.info(name + " choisit de jouer contre un autre joueur");
-            ServerDistant server = Context.getServer();
-            String mark = server.playVsComputer(Context.getClient());
-            System.out.println(mark);
-            if (mark.equals("NO")) {
-                Common.logger.warning("We cannot create a Vs Computer Game");
+
+            String[] values = {"Random", "Minimax ", "AlphaBeta"};
+            final Object dialog = JOptionPane.showInputDialog(this, "Quel est le niveau cible?", "Selection", JOptionPane.PLAIN_MESSAGE, null, values, "Random");
+            if (dialog != null) {//null if the user cancels.
+                String selectedString = dialog.toString();
+                System.out.println(selectedString);
+                Common.logger.info(name + " choisit de jouer contre un autre joueur");
+                ServerDistant server = Context.getServer();
+                String mark = server.playVsComputer(Context.getClient(), selectedString);
+                System.out.println(mark);
+                if (mark.equals("NO")) {
+                    Common.logger.warning("We cannot create a Vs Computer Game");
+                } else {
+                    Dashboard dashboard = new Dashboard(mark);
+                    Context.setDashboard(dashboard);
+                    this.setVisible(false);
+                    Context.getDashboard().setVisible(true);
+                    int id = 0;
+                    GameDistant game = (GameDistant) Naming.lookup(Configuration.getServerURL() + "/" + id);
+                    Context.setGame(game);
+                }
             } else {
-                Dashboard dashboard = new Dashboard(mark);
-                Context.setDashboard(dashboard);
-                this.setVisible(false);
-                Context.getDashboard().setVisible(true);
-                int id = 0;
-                GameDistant game = (GameDistant) Naming.lookup(Configuration.getServerURL() + "/" + id);
-                Context.setGame(game);
+                Common.logger.warning("commande annulée par l'utilisateur");
             }
+
         } catch (Exception e) {
 //            Context.getDashboard().setVisible(false);
             JOptionPane.showMessageDialog(this, "nous ne pouvons pas nous connecter au serveur,\n Assurez-vous que le serveur fonctionne sur le port 1099", "Échec de connexion au serveur", JOptionPane.ERROR_MESSAGE);
