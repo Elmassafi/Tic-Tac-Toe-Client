@@ -98,7 +98,6 @@ public class Home extends javax.swing.JFrame {
             ServerDistant server = Context.getServer();
             String mark = server.joinRoom(Context.getClient());
             Dashboard dashboard = new Dashboard(mark);
-            System.out.println("dashboard " + dashboard);
             Context.setDashboard(dashboard);
             Context.loading.setVisible(true);
             this.setVisible(false);
@@ -123,11 +122,9 @@ public class Home extends javax.swing.JFrame {
             final Object dialog = JOptionPane.showInputDialog(this, "Quel est le niveau cible?", "Selection", JOptionPane.PLAIN_MESSAGE, null, values, "Random");
             if (dialog != null) {//null if the user cancels.
                 String selectedString = dialog.toString();
-                System.out.println(selectedString);
                 Common.logger.info(name + " choisit de jouer contre un autre joueur");
                 ServerDistant server = Context.getServer();
                 String mark = server.playVsComputer(Context.getClient(), selectedString);
-                System.out.println(mark);
                 if (mark.equals("NO")) {
                     Common.logger.warning("We cannot create a Vs Computer Game");
                 } else {
