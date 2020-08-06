@@ -66,7 +66,6 @@ public class HumanPlayer extends UnicastRemoteObject implements Player {
                     Context.setGame(game);
                     Context.getDashboard().setVisible(true);
                     Context.loading.setVisible(false);
-                    System.out.println("We Get this shiit here +" + id.get());
                 } catch (NotBoundException | MalformedURLException e) {
                     e.printStackTrace();
                     Context.loading.jLabel1.setText("essayer plus tard");
